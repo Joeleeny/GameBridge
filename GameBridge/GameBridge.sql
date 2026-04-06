@@ -96,3 +96,46 @@ CREATE TABLE booking_games (
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 );
+
+
+CREATE TABLE payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_date DATE NOT NULL,
+    payment_method ENUM('cash', 'mobile_money', 'card') NOT NULL,
+    payment_status ENUM('pending', 'paid', 'failed') DEFAULT 'pending',
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE session_feedback (
+    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NOT NULL,
+    senior_id INT NOT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    mood_improvement_score INT CHECK (mood_improvement_score BETWEEN 1 AND 10),
+    comments TEXT,
+    feedback_date DATE NOT NULL,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (senior_id) REFERENCES seniors(senior_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE cognitive_scores (
+    score_id INT AUTO_INCREMENT PRIMARY KEY,
+    senior_id INT NOT NULL,
+    assessment_date DATE NOT NULL,
+    memory_score INT,
+    attention_score INT,
+    problem_solving_score INT,
+    engagement_score INT,
+    notes TEXT,
+    FOREIGN KEY (senior_id) REFERENCES seniors(senior_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
